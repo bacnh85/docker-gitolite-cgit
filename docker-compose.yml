@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  openwrt_dev_machine:
+    build: gitolite-cgit
+    image: bacnh85/gitolite-cgit
+    container_name: gitolite-cgit
+    ports:
+      - 22:22
+    tty: true
+    network_mode: bridge
