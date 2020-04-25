@@ -18,21 +18,16 @@ RUN set -xe \
   && rm -rf /var/cache/apk/* \
   && rm -rf /tmp/*
 
-# Add users
-#RUN adduser -u ${PUID} -h /home/git -D -s /usr/bin/git-shell git users
+# Volume to store SSH host keys
+VOLUME /etc/ssh/keys
 
-# Setup gitolite admin
-COPY ${UNAME}.pub /var/lib/git/
-RUN su git -c "gitolite setup -pk /var/lib/git/${UNAME}.pub"
-
+# Volume to store Gitolite data, used for Gitolite setup
 VOLUME [ "/var/lib/git/" ]
 
-# Port 80 for cgit
-# Port 20 for git
+# Expose port 22: SSH, 80: cgit web
 EXPOSE 80 22
 
-WORKDIR /app
-COPY entrypoint.sh ./
-
-ENTRYPOINT ["sh","/app/entrypoint.sh"]
+COPY entrypoint.sh /
+RUN chmod u+x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 CMD [ "/bin/sh" ]

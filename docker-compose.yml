@@ -1,10 +1,11 @@
 version: '3'
 
 services:
-  openwrt_dev_machine:
+  app:
     build: gitolite-cgit
     image: bacnh85/gitolite-cgit
     container_name: gitolite-cgit
+    env_file: config.env
     ports:
       - 22:22
     tty: true
