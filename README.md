@@ -8,10 +8,20 @@
 
 1. Pull the image
 
+```
+docker pull bacnh85/gitolite-cgit
+```
+
 2. Run the image with provided environment:
 
 ```
-docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -e SSH_KEY_NAME="$(whoami)" -p 22:22 -v repo:/var/lib/git/ bacnh85/gitolite-cgit'
+docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -e SSH_KEY_NAME="$(whoami)" -p 22:22 -v repo:/var/lib/git/ bacnh85/gitolite-cgit
+```
+
+Then you can start to clone the gitolite-admin to your workstation:
+
+```
+git clone git@<server IP>:gitolite-admin
 ```
 
 ## Docker-compose
