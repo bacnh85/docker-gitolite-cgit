@@ -18,14 +18,14 @@ RUN set -xe \
   && rm -rf /var/cache/apk/* \
   && rm -rf /tmp/*
 
-# Volume to store SSH host keys
-VOLUME /etc/ssh/keys
-
 # Volume to store Gitolite data, used for Gitolite setup
 VOLUME [ "/var/lib/git/" ]
 
 # Expose port 22: SSH, 80: cgit web
 EXPOSE 80 22
+
+# Default workdir
+WORKDIR /var/lib/git
 
 COPY entrypoint.sh /
 RUN chmod u+x /entrypoint.sh
