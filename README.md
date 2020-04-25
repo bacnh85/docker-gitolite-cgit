@@ -4,7 +4,17 @@
 
 `bacnh85/gitolite-cgit` is a Docker image with `cgit` and `gitolite` running on top of `alpine` base image.
 
-## Deployment
+## Usage
+
+1. Pull the image
+
+2. Run the image with provided environment:
+
+```
+docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -e SSH_KEY_NAME="$(whoami)" -p 22:22 -v repo:/var/lib/git/ bacnh85/gitolite-cgit'
+```
+
+## Docker-compose
 
 1. Pull the image:
 
@@ -28,7 +38,7 @@ For convience, I create a script for user who use the public key and name from t
 
 ```
 # change ssh_key, ssh_key_name to reflect your current setup
-SSH_KEY=$(cat bacnh.pub)
+SSH_KEY=$(cat ~/.ssh/id_rsa.pub)
 SSH_KEY_NAME=$(whoami)
 
 sed -i.bak \
@@ -36,7 +46,6 @@ sed -i.bak \
     -e "s#SSH_KEY_NAME=.*#SSH_KEY_NAME=${SSH_KEY_NAME}#g" \
     "$(dirname "$0")/config.env"
 ```
-
 
 3. Create `docker-compose.yml`:
 
@@ -61,11 +70,16 @@ Then power-on your container:
 docker-compose up -d
 ```
 
+## Environment
+
+- `SSH_KEY`: Public key of gitolite admin
+- `SSH_KEY_NAME`: Name of gitolite admin
+
 ## Build docker image
 
 ```
 git clone https://github.com/bacnh85/docker-gitolite-cgit.git
-cd docker-gitolite-cgit/gitolite-cgit
-docker build . -t bacnh85/gitolite-cgit
+cd docker-gitolite-cgit
+docker build gitolite-cgit -t bacnh85/gitolite-cgit
 ```
 

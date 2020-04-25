@@ -2,12 +2,6 @@
 FROM alpine:latest
 LABEL MAINTAINER="mail@bacnh.com"
 
-# Variables
-ARG PUID=1000
-ARG PGID=1000
-ARG UNAME=bacnh
-
-# UID, PID of the user
 # Install needed packages
 RUN set -xe \
   && apk add --no-cache --purge -uU \
