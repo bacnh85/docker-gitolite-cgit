@@ -6,9 +6,11 @@ LABEL MAINTAINER="mail@bacnh.com"
 RUN set -xe \
   && apk add --no-cache --purge -uU \
     # Install gitolite
-    gitolite git \
-    # Install SSH Server
-    openssh-server curl \ 
+    gitolite git openssh-server \
+    # add nginx and cgit
+    cgit nginx fcgiwrap spawn-fcgi \
+  # Create nginx folder
+  && mkdir -p /run/nginx \
   # Clean up
   && rm -rf /var/cache/apk/* \
   && rm -rf /tmp/*
@@ -19,7 +21,7 @@ VOLUME [ "/etc/ssh" ]
 # Volume to store Gitolite data, used for Gitolite setup
 VOLUME [ "/var/lib/git/" ]
 
-EXPOSE 22
+EXPOSE 22 80
 WORKDIR /var/lib/git
 
 COPY entrypoint.sh /

@@ -2,7 +2,9 @@
 
 ## What is this image?
 
-`bacnh85/gitolite-cgit` is a Docker image with `cgit` and `gitolite` running on top of `alpine` base image.
+[`bacnh85/gitolite-cgit`](https://hub.docker.com/r/bacnh85/gitolite-cgit) is a Docker image with `cgit` and `gitolite` running on top of `alpine` base image. Dockerfile is available at [Github repo](https://github.com/bacnh85/docker-gitolite-cgit).
+
+![cgit](img/cgit.png)
 
 ## Usage
 
@@ -18,11 +20,15 @@ docker pull bacnh85/gitolite-cgit
 docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -e SSH_KEY_NAME="$(whoami)" -p 22:22 -v repo:/var/lib/git/ bacnh85/gitolite-cgit
 ```
 
-Then you can start to clone the gitolite-admin to your workstation:
+## Test result
+
+1) Gitolite: you can start to clone the gitolite-admin to your workstation:
 
 ```
 git clone git@<server IP>:gitolite-admin
 ```
+
+2) Cgit webpage: `http://<server_ip>/cgit`
 
 ## Docker-compose
 

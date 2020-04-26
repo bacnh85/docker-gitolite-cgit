@@ -9,6 +9,7 @@ services:
       - git:/var/lib/git/
     ports:
       - "22:22"
+      - "80:80"
     tty: true
 volumes: 
   git:
