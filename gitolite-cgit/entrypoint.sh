@@ -26,26 +26,36 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
   ## Config cgit interface
   cat > /etc/cgitrc <<- EOF
 	# Enable caching of up to 1000 output entries
-	cache-size=10
+	cache-size=1000
+
 	# Specify the css url
 	css=/cgit.css
+
 	# Show extra links for each repository on the index page
 	enable-index-links=1
+
 	# Enable ASCII art commit history graph on the log pages
 	enable-commit-graph=1
+
 	# Show number of affected files per commit on the log pages
 	enable-log-filecount=1
+
 	# Show number of added/removed lines per commit on the log pages
 	enable-log-linecount=1
+
 	# Use a custom logo
 	logo=/cgit.png
+
 	# Enable statistics per week, month and quarter
 	max-stats=quarter
+
 	# Allow download of tar.gz, tar.bz2, and tar.xz formats
 	snapshots=tar.gz tar.bz2 tar.xz
+
 	##
 	## List of common mimetypes
 	##
+
 	mimetype.gif=image/gif
 	mimetype.html=text/html
 	mimetype.jpg=image/jpeg
@@ -53,9 +63,11 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
 	mimetype.pdf=application/pdf
 	mimetype.png=image/png
 	mimetype.svg=image/svg+xml
+
 	# Enable syntax highlighting and about formatting
 	source-filter=/usr/lib/cgit/filters/syntax-highlighting.py
 	about-filter=/usr/lib/cgit/filters/about-formatting.sh
+
 	##
 	## List of common readmes
 	##
@@ -87,11 +99,18 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
 	readme=:install.txt
 	readme=:INSTALL
 	readme=:install
+
 	# Direct cgit to repository location managed by gitolite
 	remove-suffix=1
 	project-list=/var/lib/git/projects.list
 	scan-path=/var/lib/git/repositories
 	EOF
+
+	# Apend clone-prefix
+	if [[ ! -z "$CGIT_PREFIX" ]]; then
+		echo "# Specify some default clone prefixes" >> /etc/cgitrc
+		echo "clone-prefix=$CGIT_PREFIX" >> /etc/cgitrc
+	fi
 
   # Nginx configuration
   cat > /etc/nginx/conf.d/default.conf <<- EOF

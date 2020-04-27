@@ -48,6 +48,10 @@ In this repo, I create `gitolite` admin with the host public key and username. I
 #
 SSH_KEY=<your public key content>
 SSH_KEY_NAME=<your gitolite name>
+#
+# Cgit options
+#
+CGIT_PREFIX=<cgit clone prefix like: ssh://git@foo.org git://foo.org >
 ```
 
 For convience, I create a script for user who use the public key and name from the host running Docker:
@@ -122,6 +126,7 @@ volumes:
 
 - `SSH_KEY`: Public key of gitolite admin
 - `SSH_KEY_NAME`: Name of gitolite admin
+- `CGIT_PREFIX`: cgit clone prefix to display on each repository. For example: my web url is: `https://git.bacnh.com`, the clone URL should be: `ssh://git.bacnh.com git://git.bacnh.com`
 
 ## Build docker image
 
