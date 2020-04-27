@@ -17,7 +17,7 @@ docker pull bacnh85/gitolite-cgit
 2. Run the image with provided environment:
 
 ```
-docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -e SSH_KEY_NAME="$(whoami)" -p 22:22 -v repo:/var/lib/git/ bacnh85/gitolite-cgit
+docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -e SSH_KEY_NAME="$(whoami)" -p 22:22 -p 80:80 -v repo:/var/lib/git/ bacnh85/gitolite-cgit
 ```
 
 ## Test result
@@ -77,6 +77,7 @@ services:
       - git:/var/lib/git/
     ports:
       - 22:22
+      - 80:80
     tty: true
 volumes: 
   git:
@@ -85,6 +86,37 @@ Then power-on your container:
 ```
 docker-compose up -d
 ```
+
+### Customize cgit configuration
+
+As there are many cgit configuration, you can create cgitrc configure and map to `/etc/cgitrc`
+
+```
+# Copy cgitrc from existing container
+docker cp gitolite-cgit:/etc/cgitrc .
+```
+
+Modify the `docker-compose.yml`:
+
+```
+version: '3'
+
+services:
+  app:
+    image: bacnh85/gitolite-cgit
+    container_name: gitolite-cgit
+    env_file: config.env
+    volumes: 
+      - git:/var/lib/git/
+      - ./cgitrc:/etc/cgitrc
+    ports:
+      - 22:22
+      - 80:80
+    tty: true
+volumes: 
+  git:
+```
+
 
 ## Environment
 
