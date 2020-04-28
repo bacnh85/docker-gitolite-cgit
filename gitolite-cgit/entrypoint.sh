@@ -127,7 +127,7 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
         fastcgi_param SCRIPT_FILE \$document_root/cgit.cgi;
         fastcgi_param PATH_INFO \$uri;
         fastcgi_param QUERY_STRING \$args;
-        }
+    }
   }
 	EOF
 
@@ -138,6 +138,10 @@ fi
 
 # launch fcgiwrap via spawn-fcgi, port 1234
 spawn-fcgi -p 1234 -f /usr/bin/fcgiwrap
+
+# Start git-daemon
+git daemon --detach --reuseaddr --export-all  --base-path=/var/lib/git/repositories  /
+var/lib/git/repositories
 
 # Start nginx
 exec nginx -g "daemon off;" $@

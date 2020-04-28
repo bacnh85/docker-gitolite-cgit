@@ -5,11 +5,12 @@ services:
     image: bacnh85/gitolite-cgit
     container_name: gitolite-cgit
     env_file: config.env
-    volumes: 
+    volumes:
       - git:/var/lib/git/
     ports:
       - "22:22"
       - "80:80"
+      - "9418:9418"
     tty: true
 volumes: 
   git:

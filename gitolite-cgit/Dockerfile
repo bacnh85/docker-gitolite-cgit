@@ -7,6 +7,8 @@ RUN set -xe \
   && apk add --no-cache --purge -uU \
     # Install gitolite
     gitolite git openssh-server \
+    # install git-daemon
+    git-daemon \
     # add nginx and cgit
     cgit nginx fcgiwrap spawn-fcgi \
   # Create nginx folder
@@ -16,12 +18,12 @@ RUN set -xe \
   && rm -rf /tmp/*
 
 # Volume to store all ssh host key
-VOLUME [ "/etc/ssh" ]
+VOLUME [ "/etc/ssh/" ]
 
 # Volume to store Gitolite data, used for Gitolite setup
 VOLUME [ "/var/lib/git/" ]
 
-EXPOSE 22 80
+EXPOSE 22 80 9418
 WORKDIR /var/lib/git
 
 COPY entrypoint.sh /

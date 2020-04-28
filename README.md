@@ -17,18 +17,34 @@ docker pull bacnh85/gitolite-cgit
 2. Run the image with provided environment:
 
 ```
-docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -e SSH_KEY_NAME="$(whoami)" -p 22:22 -p 80:80 -v repo:/var/lib/git/ bacnh85/gitolite-cgit
+docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -e SSH_KEY_NAME="$(whoami)" -p 22:22 -p 80:80 -p 9418:9418 -v repo:/var/lib/git/ bacnh85/gitolite-cgit
 ```
 
-## Test result
+### Environment
 
-1) Gitolite: you can start to clone the gitolite-admin to your workstation:
+- `SSH_KEY`: Public key of gitolite admin
+- `SSH_KEY_NAME`: Name of gitolite admin
+- `CGIT_PREFIX`: cgit clone prefix to display on each repository. For example: my web url is: `https://git.bacnh.com`, the clone URL should be: `ssh://git@git.bacnh.com`
 
-```
-git clone git@<server IP>:gitolite-admin
-```
+### Exposed ports
 
-2) Cgit webpage: `http://<server_ip>/cgit`
+- Port 22: for SSH clone
+- Port 80: for cgit webpage running on Nginx
+- Port 9418: for git daemon protocol
+
+### Volume
+
+- `/var/lib/git`: gitolite home folder, store all repositories, `gitolite-admin` repo, ...
+- `/etc/ssh/`: store all generated SSH server key
+
+### How to interact with git server
+
+Cgit webpage: `http://<server_ip>/cgit`
+
+Supported clone method:
+- SSH: authentication with gitolite configuration inside `gitolite-admin`. For more information, pls refer to (basic administration](https://gitolite.com/gitolite/basic-admin.html). Syntax: `git clone ssh://git@<server_ip>/<repo_name>`
+- HTTP: `enable-http-clone=1` by default, which let cgit act as a dumb HTTP enpoint for git clones. You can disable that by edit /etc/cgitrc. I may consider to add more feature, so you can set config from `docker run` or `docker-compose.yml`. `git push` is not supported via HTTP at this moment. Syntax: `git clone http://<server_ip>/cgit/<repo_name>`
+- GIT: `git daemon` is enabled by default with `upload-pack` service (this serves git fetch-pack and git ls-remote clients), allowing anonymous fetch, clone. Syntax: `git clone git://<server_ip>/<repo_path>`
 
 ## Docker-compose
 
@@ -82,6 +98,7 @@ services:
     ports:
       - 22:22
       - 80:80
+      - 9418:9418
     tty: true
 volumes: 
   git:
@@ -116,17 +133,11 @@ services:
     ports:
       - 22:22
       - 80:80
+      - 9418:9418
     tty: true
 volumes: 
   git:
 ```
-
-
-## Environment
-
-- `SSH_KEY`: Public key of gitolite admin
-- `SSH_KEY_NAME`: Name of gitolite admin
-- `CGIT_PREFIX`: cgit clone prefix to display on each repository. For example: my web url is: `https://git.bacnh.com`, the clone URL should be: `ssh://git.bacnh.com git://git.bacnh.com`
 
 ## Build docker image
 
