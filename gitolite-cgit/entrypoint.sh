@@ -140,7 +140,7 @@ fi
 spawn-fcgi -p 1234 -f /usr/bin/fcgiwrap
 
 # Start git-daemon
-git daemon --detach --reuseaddr --export-all  --base-path=/var/lib/git/repositories  /
+git daemon --detach --reuseaddr --export-all  --base-path=/var/lib/git/repositories  \
 var/lib/git/repositories
 
 # Start nginx
