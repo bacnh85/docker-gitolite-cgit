@@ -25,6 +25,9 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
 
   ## Config cgit interface
   cat > /etc/cgitrc <<- EOF
+	# Use a virtual-root
+	#virtual-root=/
+
 	# Enable caching of up to 1000 output entries
 	cache-size=1000
 
@@ -116,17 +119,18 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
   cat > /etc/nginx/conf.d/default.conf <<- EOF
   server {
     listen 80 default_server;
-    listen [::]:80 default_server;
-    #server_name git.your_domain.com;
-
+    #listen [::]:80 default_server;
+    server_name localhost;
+		
     root /usr/share/webapps/cgit;
-    try_files \$uri @cgit;
+		try_files \$uri @cgit;
+
     location @cgit {
-        include fastcgi_params;
-        fastcgi_pass localhost:1234;
-        fastcgi_param SCRIPT_FILE \$document_root/cgit.cgi;
-        fastcgi_param PATH_INFO \$uri;
-        fastcgi_param QUERY_STRING \$args;
+      include fastcgi_params;
+      fastcgi_pass unix:/run/fcgiwrap/fcgiwrap.socket;
+      fastcgi_param SCRIPT_FILE \$document_root/cgit.cgi;
+      fastcgi_param PATH_INFO \$uri;
+      fastcgi_param QUERY_STRING \$args;
     }
   }
 	EOF
@@ -134,14 +138,15 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
 fi
 
 # Start sshd as detach, log to stderr (-e)
-/usr/sbin/sshd -e 
+/usr/sbin/sshd -e
 
 # launch fcgiwrap via spawn-fcgi, port 1234
-spawn-fcgi -p 1234 -f /usr/bin/fcgiwrap
+spawn-fcgi -s /run/fcgiwrap/fcgiwrap.socket -f /usr/bin/fcgiwrap
+chmod 660 /run/fcgiwrap/fcgiwrap.socket
 
 # Start git-daemon
 git daemon --detach --reuseaddr --export-all  --base-path=/var/lib/git/repositories  \
 var/lib/git/repositories
 
 # Start nginx
-exec nginx -g "daemon off;" $@
+exec nginx -g "daemon off;"
