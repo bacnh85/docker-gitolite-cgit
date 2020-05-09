@@ -129,6 +129,10 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
     root /usr/share/webapps/cgit;
 		try_files \$uri @cgit;
 
+		location ~* ^.+\.(css|png|ico)$ {
+    	expires 30d;
+    }
+
     location / {
       index cgit.cgi;
       fastcgi_param SCRIPT_FILENAME \$document_root/cgit.cgi;
