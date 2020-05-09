@@ -26,7 +26,7 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
   ## Config cgit interface
   cat > /etc/cgitrc <<- EOF
 	# Use a virtual-root
-	#virtual-root=/
+	virtual-root=/
 
 	# Enable caching of up to 1000 output entries
 	cache-size=1000
@@ -119,18 +119,19 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
   cat > /etc/nginx/conf.d/default.conf <<- EOF
   server {
     listen 80 default_server;
-    #listen [::]:80 default_server;
     server_name localhost;
 		
     root /usr/share/webapps/cgit;
-		try_files \$uri @cgit;
+		try_files \$uri @cgit;		
 
-    location @cgit {
-      include fastcgi_params;
+    location / {
+      index cgit.cgi;
+      fastcgi_param SCRIPT_FILENAME \$document_root/cgit.cgi;
       fastcgi_pass unix:/run/fcgiwrap/fcgiwrap.socket;
-      fastcgi_param SCRIPT_FILE \$document_root/cgit.cgi;
+      fastcgi_param HTTP_HOST \$server_name;
       fastcgi_param PATH_INFO \$uri;
-      fastcgi_param QUERY_STRING \$args;
+      fastcgi_param QUERY_INFO \$uri;
+      include "fastcgi_params";
     }
   }
 	EOF
