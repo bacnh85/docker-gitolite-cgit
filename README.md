@@ -24,8 +24,8 @@ docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -e SSH_KEY_NAME="$(whoami)" -p 
 
 - `SSH_KEY`: Public key of gitolite admin
 - `SSH_KEY_NAME`: Name of gitolite admin
-- `CGIT_PREFIX`: cgit clone prefix to display on each repository. For example: my web url is: `https://git.bacnh.com`, the clone URL should be: `ssh://git@git.bacnh.com`
-
+- `CGIT_CLONE_PREFIX`: cgit clone prefix to display on each repository. For example: my web url is: `https://git.bacnh.com`, the clone URL should be: `ssh://git@git.bacnh.com`
+- `CGIT_ROOT_TITLE`: Text printed as heading on the repository index page. Default value: "Git Repository Browser".
 ### Exposed ports
 
 - Port 22: for SSH clone
@@ -67,7 +67,7 @@ SSH_KEY_NAME=<your gitolite name>
 #
 # Cgit options
 #
-CGIT_PREFIX=<cgit clone prefix like: ssh://git@foo.org git://foo.org >
+CGIT_CLONE_PREFIX=<cgit clone prefix like: ssh://git@foo.org git://foo.org >
 ```
 
 For convience, I create a script for user who use the public key and name from the host running Docker:

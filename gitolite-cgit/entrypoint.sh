@@ -104,15 +104,20 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
 	readme=:install
 
 	# Direct cgit to repository location managed by gitolite
-	remove-suffix=1
+	remove-suffix=0
 	project-list=/var/lib/git/projects.list
 	scan-path=/var/lib/git/repositories
 	EOF
 
 	# Apend clone-prefix
-	if [[ ! -z "$CGIT_PREFIX" ]]; then
+	if [[ ! -z "$CGIT_CLONE_PREFIX" ]]; then
 		echo "# Specify some default clone prefixes" >> /etc/cgitrc
-		echo "clone-prefix=$CGIT_PREFIX" >> /etc/cgitrc
+		echo "clone-prefix=$CGIT_CLONE_PREFIX" >> /etc/cgitrc
+	fi
+
+	if [[ ! -z "$CGIT_ROOT_TITLE" ]]; then
+		echo "# Set the title and heading of the repository index page" >> /etc/cgitrc
+		echo "root-title=$CGIT_ROOT_TITLE" >> /etc/cgitrc
 	fi
 
   # Nginx configuration
@@ -122,7 +127,7 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
     server_name localhost;
 		
     root /usr/share/webapps/cgit;
-		try_files \$uri @cgit;		
+		try_files \$uri @cgit;
 
     location / {
       index cgit.cgi;
