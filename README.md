@@ -68,6 +68,7 @@ SSH_KEY_NAME=<your gitolite name>
 # Cgit options
 #
 CGIT_CLONE_PREFIX=<cgit clone prefix like: ssh://git@foo.org git://foo.org >
+CGIT_ROOT_TITLE=Git Repository Browser
 ```
 
 For convience, I create a script for user who use the public key and name from the host running Docker:
