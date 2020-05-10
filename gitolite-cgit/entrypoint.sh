@@ -155,7 +155,8 @@ spawn-fcgi -s /run/fcgiwrap/fcgiwrap.socket -f /usr/bin/fcgiwrap
 chmod 660 /run/fcgiwrap/fcgiwrap.socket
 
 # Start git-daemon
-git daemon --detach --reuseaddr --export-all  --base-path=/var/lib/git/repositories
+git daemon --detach --reuseaddr --export-all  --base-path=/var/lib/git/repositories \
+/var/lib/git/repositories
 
 # Start nginx
 exec nginx -g "daemon off;"
