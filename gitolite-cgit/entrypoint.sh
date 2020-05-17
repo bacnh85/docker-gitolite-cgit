@@ -68,7 +68,7 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
 	mimetype.svg=image/svg+xml
 
 	# Enable syntax highlighting and about formatting
-	source-filter=/usr/lib/cgit/filters/syntax-highlighting.py
+	source-filter=/usr/lib/cgit/filters/syntax-highlighting.sh
 	about-filter=/usr/lib/cgit/filters/about-formatting.sh
 
 	##
@@ -119,6 +119,12 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
 		echo "# Set the title and heading of the repository index page" >> /etc/cgitrc
 		echo "root-title=$CGIT_ROOT_TITLE" >> /etc/cgitrc
 	fi
+
+	# Using highlight syntax
+	sed -i.bak \
+    -e "s#exec highlight --force -f -I -X -S #\#&#g" \
+    -e "s#\#exec highlight --force -f -I -O xhtml#exec highlight --force --inline-css -f -I -O xhtml#g" \
+    /usr/lib/cgit/filters/syntax-highlighting.sh
 
   # Nginx configuration
   cat > /etc/nginx/conf.d/default.conf <<- EOF

@@ -10,7 +10,7 @@ RUN set -xe \
     # install git-daemon
     git-daemon \
     # add nginx and cgit
-    cgit nginx fcgiwrap spawn-fcgi \
+    cgit nginx fcgiwrap spawn-fcgi highlight \
   # Create nginx folder
   && mkdir -p /run/nginx \
   # Clean up
