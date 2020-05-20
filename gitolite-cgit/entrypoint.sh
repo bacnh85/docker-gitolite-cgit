@@ -6,9 +6,6 @@
 if [ ! -f /etc/ssh/ssh_host_rsa_key ]; then
   ssh-keygen -A
 
-  # enable random git password
-  GIT_PASSWORD=$(date +%s | sha256sum | base64 | head -c 32)
-  echo git:$GIT_PASSWORD | chpasswd
 fi
 
 # Setup gitolite at volume /var/lib/git
@@ -21,6 +18,10 @@ fi
 
 # Init container
 if [ ! -f /etc/nginx/conf.d/cgit.conf ]; then
+  # enable random git password
+  GIT_PASSWORD=$(date +%s | sha256sum | base64 | head -c 32)
+  echo git:$GIT_PASSWORD | chpasswd
+
   # add web user (nginx) to gitolite group (git)
   adduser nginx git
 
