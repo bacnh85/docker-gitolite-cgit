@@ -2,7 +2,6 @@
 
 # Validate environment variables
 
-
 # Create ssh host key if not present
 if [ ! -f /etc/ssh/ssh_host_rsa_key ]; then
   ssh-keygen -A
@@ -12,15 +11,17 @@ if [ ! -f /etc/ssh/ssh_host_rsa_key ]; then
   echo git:$GIT_PASSWORD | chpasswd
 fi
 
-
+# Setup gitolite at volume /var/lib/git
 if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
   # Configure gitolite
   echo "$SSH_KEY" > "/tmp/$SSH_KEY_NAME.pub"
   su git -c "gitolite setup -pk \"/tmp/$SSH_KEY_NAME.pub\""
   rm "/tmp/$SSH_KEY_NAME.pub"
+fi
 
+# Init container
+if [ ! -f /etc/nginx/conf.d/cgit.conf ]; then
   # add web user (nginx) to gitolite group (git)
-  # or www-data
   adduser nginx git
 
   ## Config cgit interface
@@ -127,7 +128,9 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
     /usr/lib/cgit/filters/syntax-highlighting.sh
 
   # Nginx configuration
-  cat > /etc/nginx/conf.d/default.conf <<- EOF
+	rm /etc/nginx/conf.d/default.conf
+
+  cat > /etc/nginx/conf.d/cgit.conf <<- EOF
   server {
     listen 80 default_server;
     server_name localhost;
