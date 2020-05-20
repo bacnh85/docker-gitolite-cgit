@@ -108,6 +108,7 @@ if [ ! -f /etc/nginx/conf.d/cgit.conf ]; then
 	# Direct cgit to repository location managed by gitolite
 	remove-suffix=0
 	project-list=/var/lib/git/projects.list
+	section-from-path=-1
 	scan-path=/var/lib/git/repositories
 	EOF
 
