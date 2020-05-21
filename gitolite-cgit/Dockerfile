@@ -6,11 +6,13 @@ LABEL MAINTAINER="mail@bacnh.com"
 RUN set -xe \
   && apk add --no-cache --purge -uU \
     # Install gitolite
-    gitolite git openssh-server \
+    gitolite git openssh \
     # install git-daemon
     git-daemon \
     # add nginx and cgit
-    cgit nginx fcgiwrap spawn-fcgi highlight \
+    cgit nginx fcgiwrap spawn-fcgi \
+    # python 3 pkg for highlight, about page
+    py3-markdown py3-pygments \
   # Create nginx folder
   && mkdir -p /run/nginx \
   # Clean up
