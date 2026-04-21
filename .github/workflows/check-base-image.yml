@@ -1,0 +1,64 @@
+name: Check Base Image Update
+
+on:
+  schedule:
+    # Check daily at 04:00 UTC
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-and-rebuild:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get current Alpine digest
+        id: alpine
+        run: |
+          CURRENT=$(grep -oP 'FROM alpine:\K.*' gitolite-cgit/Dockerfile || echo "latest")
+          echo "current=${CURRENT}" >> "$GITHUB_OUTPUT"
+
+          # Get the latest Alpine digest from Docker Hub
+          LATEST_DIGEST=$(docker manifest inspect alpine:latest 2>/dev/null | jq -r '.manifests[0].digest' || echo "")
+          echo "latest_digest=${LATEST_DIGEST}" >> "$GITHUB_OUTPUT"
+
+          # Get the digest we last built with (stored in a file)
+          if [ -f .alpine-digest ]; then
+            LAST_DIGEST=$(cat .alpine-digest)
+          else
+            LAST_DIGEST=""
+          fi
+          echo "last_digest=${LAST_DIGEST}" >> "$GITHUB_OUTPUT"
+
+          if [ "$LATEST_DIGEST" != "$LAST_DIGEST" ] && [ -n "$LATEST_DIGEST" ]; then
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+            echo "$LATEST_DIGEST" > .alpine-digest
+          else
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit digest change and trigger rebuild
+        if: steps.alpine.outputs.updated == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .alpine-digest
+          git commit -m "chore: update Alpine base image digest" || true
+          git push
+
+      - name: Trigger Docker rebuild
+        if: steps.alpine.outputs.updated == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'docker.yml',
+              ref: 'main'
+            })

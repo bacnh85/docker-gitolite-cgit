@@ -1,4 +1,4 @@
-# docker build . -t bacnh85/gitolite-cgit
+# docker build . -t ghcr.io/bacnh85/docker-gitolite-cgit
 FROM alpine:latest
 LABEL MAINTAINER="mail@bacnh.com"
 
