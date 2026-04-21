@@ -2,7 +2,7 @@ version: '3'
 
 services:
   app:
-    image: bacnh85/gitolite-cgit
+    image: ghcr.io/bacnh85/docker-gitolite-cgit:latest
     container_name: gitolite-cgit
     env_file: config.env
     volumes:

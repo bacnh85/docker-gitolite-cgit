@@ -2,7 +2,9 @@
 
 ## What is this image?
 
-[`bacnh85/gitolite-cgit`](https://hub.docker.com/r/bacnh85/gitolite-cgit) is a Docker image with `cgit` and `gitolite` running on top of `alpine` base image. Dockerfile is available at [Github repo](https://github.com/bacnh85/docker-gitolite-cgit).
+[`ghcr.io/bacnh85/docker-gitolite-cgit`](https://github.com/bacnh85/docker-gitolite-cgit/pkgs/container/docker-gitolite-cgit) is a Docker image with `cgit` and `gitolite` running on top of `alpine` base image. Dockerfile is available at [Github repo](https://github.com/bacnh85/docker-gitolite-cgit).
+
+[![Build and Push Docker Image](https://github.com/bacnh85/docker-gitolite-cgit/actions/workflows/docker.yml/badge.svg)](https://github.com/bacnh85/docker-gitolite-cgit/actions/workflows/docker.yml)
 
 ![cgit](img/cgit.png)
 
@@ -11,13 +13,13 @@
 1. Pull the image
 
 ```
-docker pull bacnh85/gitolite-cgit
+docker pull ghcr.io/bacnh85/docker-gitolite-cgit:latest
 ```
 
 2. Run the image with provided environment:
 
 ```
-docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -e SSH_KEY_NAME="$(whoami)" -p 22:22 -p 80:80 -p 9418:9418 -v repo:/var/lib/git/ bacnh85/gitolite-cgit
+docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -e SSH_KEY_NAME="$(whoami)" -p 22:22 -p 80:80 -p 9418:9418 -v repo:/var/lib/git/ ghcr.io/bacnh85/docker-gitolite-cgit:latest
 ```
 
 ### Environment
@@ -51,7 +53,7 @@ Supported clone method:
 1. Pull the image:
 
 ```
-docker pull bacnh85/gitolite-cgit
+docker pull ghcr.io/bacnh85/docker-gitolite-cgit:latest
 ```
 
 2. Create environment file
@@ -91,7 +93,7 @@ version: '3'
 
 services:
   app:
-    image: bacnh85/gitolite-cgit
+    image: ghcr.io/bacnh85/docker-gitolite-cgit:latest
     container_name: gitolite-cgit
     env_file: config.env
     volumes: 
@@ -125,7 +127,7 @@ version: '3'
 
 services:
   app:
-    image: bacnh85/gitolite-cgit
+    image: ghcr.io/bacnh85/docker-gitolite-cgit:latest
     container_name: gitolite-cgit
     env_file: config.env
     volumes: 
@@ -145,6 +147,27 @@ volumes:
 ```
 git clone https://github.com/bacnh85/docker-gitolite-cgit.git
 cd docker-gitolite-cgit
-docker build gitolite-cgit -t bacnh85/gitolite-cgit
+docker build gitolite-cgit -t ghcr.io/bacnh85/docker-gitolite-cgit:latest
 ```
 
+## CI/CD
+
+This repository uses GitHub Actions to automatically build and publish the Docker image to [GitHub Container Registry (ghcr.io)](https://github.com/bacnh85/docker-gitolite-cgit/pkgs/container/docker-gitolite-cgit).
+
+### Triggers
+
+| Trigger | Description |
+|---------|-------------|
+| Push to `main` | Builds when files in `gitolite-cgit/` or workflow files change |
+| Weekly schedule | Rebuilds every Monday at 06:00 UTC to pick up Alpine base image updates |
+| Daily check | Checks if the Alpine base image has been updated and triggers a rebuild if needed |
+| Manual (`workflow_dispatch`) | Trigger a build on demand from the Actions tab |
+
+### Multi-architecture
+
+Images are built for both `linux/amd64` and `linux/arm64` platforms.
+
+### Available tags
+
+- `latest` — always points to the latest build from `main`
+- `sha-<commit>` — tagged with the short commit SHA for reproducibility
